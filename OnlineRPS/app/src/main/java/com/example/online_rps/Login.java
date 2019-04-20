@@ -39,12 +39,36 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.Manifest.permission.READ_CONTACTS;
+
 
 public class Login extends AppCompatActivity {
+
+    public TextView username;
+    public TextView password;
+    public Button login;
+    public Button register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+
+        login = findViewById(R.id.login);
+        register = findViewById(R.id.register);
+
+        register.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                doRegister();
+            }
+        });
     }
+
+    public void doRegister(){
+        System.out.println("hi");
+    }
+
 }
