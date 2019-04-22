@@ -48,6 +48,8 @@ public class Login extends AppCompatActivity {
     public TextView password;
     public Button login;
     public Button register;
+    private UserLoginTask mAuthTask = null;
+    public final String PATH = "https://cs.binghamton.edu/~jsuhr2/cs441/Online-Rock-Paper-Scissors/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +64,98 @@ public class Login extends AppCompatActivity {
 
         register.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                doRegister();
+                attemptLogin();
             }
         });
     }
+    private void attemptLogin() {
+        if (mAuthTask != null) {
+            return;
+        }
 
-    public void doRegister(){
-        System.out.println("hi");
+        // Reset errors.
+        username.setError(null);
+        password.setError(null);
+
+        // Store values at the time of the login attempt.
+        String tempU = username.getText().toString();
+        String tempP = password.getText().toString();
+
+        mAuthTask = new UserLoginTask(tempU, tempP);
+        mAuthTask.execute((Void) null);
     }
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String mEmail;
+        private final String mPassword;
+
+        UserLoginTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        // Reuse php files from assignment 4 - database name: kfranke1_assignment5
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+            /*
+            try {
+                URL url = new URL(PATH + "login.php");
+                HttpURLConnection connect = (HttpURLConnection) url
+                        .openConnection();
+                connect.setReadTimeout(15000);
+                connect.setConnectTimeout(15000);
+                connect.setRequestMethod("POST");
+                connect.setDoInput(true);
+                connect.setDoOutput(true);
+
+                OutputStream os = connect.getOutputStream();
+                String s = "username=" + mEmail + "&password=" + mPassword;
+                os.write(s.getBytes());
+                os.close();
+
+                InputStream is = connect.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line = br.readLine();
+                if (line.equals("Success")) {
+                    Log.d("Success", "success");
+                    return true;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+            */
+            // TODO: register the new account here.
+            try {
+                URL url = new URL(PATH + "register.php");
+                HttpURLConnection connect = (HttpURLConnection) url
+                        .openConnection();
+                connect.setReadTimeout(15000);
+                connect.setConnectTimeout(15000);
+                connect.setRequestMethod("POST");
+                connect.setDoInput(true);
+                connect.setDoOutput(true);
+
+                OutputStream os = connect.getOutputStream();
+                String s = "username=" + mEmail + "&password=" + mPassword;
+                os.write(s.getBytes());
+                os.close();
+
+                InputStream is = connect.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line = br.readLine();
+                if (line.equals("Success")) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
 }
