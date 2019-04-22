@@ -1,5 +1,6 @@
 package com.example.online_rps;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -9,5 +10,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if(!bundle.isEmpty())
+        {
+            System.out.println(bundle.getString("User"));
+        }
     }
 }

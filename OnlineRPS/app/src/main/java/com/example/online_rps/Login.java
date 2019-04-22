@@ -49,7 +49,8 @@ public class Login extends AppCompatActivity {
     public Button login;
     public Button register;
     private UserLoginTask mAuthTask = null;
-    public final String PATH = "https://cs.binghamton.edu/~jsuhr2/cs441/Online-Rock-Paper-Scissors/";
+    public final String PATH = "https://cs.binghamton.edu/~jsuhr2/";
+    //public final String PATH = "https://cs.binghamton.edu/~jsuhr2/cs441/Online-Rock-Paper-Scissors/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +59,7 @@ public class Login extends AppCompatActivity {
 
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
-
-        login = findViewById(R.id.login);
         register = findViewById(R.id.register);
-
         register.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 attemptLogin();
@@ -73,32 +71,35 @@ public class Login extends AppCompatActivity {
             return;
         }
 
-        // Reset errors.
         username.setError(null);
         password.setError(null);
 
-        // Store values at the time of the login attempt.
         String tempU = username.getText().toString();
         String tempP = password.getText().toString();
 
         mAuthTask = new UserLoginTask(tempU, tempP);
         mAuthTask.execute((Void) null);
     }
+    void switchActivities(String user)
+    {
+        Intent intent = new Intent(Login.this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("User", user);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
+        private final String login_user;
+        private final String login_password;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
+        UserLoginTask(String user, String password) {
+            login_user = user;
+            login_password = password;
         }
 
-        // Reuse php files from assignment 4 - database name: kfranke1_assignment5
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            /*
             try {
                 URL url = new URL(PATH + "login.php");
                 HttpURLConnection connect = (HttpURLConnection) url
@@ -110,7 +111,7 @@ public class Login extends AppCompatActivity {
                 connect.setDoOutput(true);
 
                 OutputStream os = connect.getOutputStream();
-                String s = "username=" + mEmail + "&password=" + mPassword;
+                String s = "username=" + login_user + "&password=" + login_password;
                 os.write(s.getBytes());
                 os.close();
 
@@ -118,17 +119,29 @@ public class Login extends AppCompatActivity {
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line = br.readLine();
                 if (line.equals("Success")) {
-                    Log.d("Success", "success");
+                    //switch activities
+                    System.out.println("Login Success");
+                    switchActivities(login_user);
                     return true;
+                }
+                else if(line.equals("Password"))
+                {
+                    System.out.println("Wrong Password");
+                    mAuthTask = null;
+                    return false;
+                }
+                else
+                {
+                    System.out.println("Wrong username, registering the user");
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
-            */
             // TODO: register the new account here.
             try {
+                System.out.println("Registering user");
                 URL url = new URL(PATH + "register.php");
                 HttpURLConnection connect = (HttpURLConnection) url
                         .openConnection();
@@ -139,7 +152,7 @@ public class Login extends AppCompatActivity {
                 connect.setDoOutput(true);
 
                 OutputStream os = connect.getOutputStream();
-                String s = "username=" + mEmail + "&password=" + mPassword;
+                String s = "username=" + login_user + "&password=" + login_password;
                 os.write(s.getBytes());
                 os.close();
 
@@ -147,8 +160,12 @@ public class Login extends AppCompatActivity {
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line = br.readLine();
                 if (line.equals("Success")) {
+
+                    System.out.println("Register Success");
+                    switchActivities(login_user);
                     return true;
                 } else {
+                    System.out.println("Register Fail");
                     return false;
                 }
 
