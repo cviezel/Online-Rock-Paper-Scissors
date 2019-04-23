@@ -46,7 +46,6 @@ public class Login extends AppCompatActivity {
 
     public TextView username;
     public TextView password;
-    public Button login;
     public Button register;
     private UserLoginTask mAuthTask = null;
     public final String PATH = "https://cs.binghamton.edu/~jsuhr2/";
@@ -159,13 +158,14 @@ public class Login extends AppCompatActivity {
                 InputStream is = connect.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line = br.readLine();
+                System.out.println(line);
                 if (line.equals("Success")) {
-
                     System.out.println("Register Success");
                     switchActivities(login_user);
                     return true;
                 } else {
                     System.out.println("Register Fail");
+                    mAuthTask = null;
                     return false;
                 }
 
