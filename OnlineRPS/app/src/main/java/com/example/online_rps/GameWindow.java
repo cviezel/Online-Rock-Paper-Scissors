@@ -95,7 +95,7 @@ public class GameWindow extends AppCompatActivity {
                 move = 1;
                 while(status.equals("Failed"))
                     playGame();
-                back.setClickable(false);
+                //back.setClickable(false);
                 rock.setClickable(false);
                 paper.setClickable(false);
                 scissors.setClickable(false);
@@ -106,7 +106,7 @@ public class GameWindow extends AppCompatActivity {
                 move = 2;
                 while(status.equals("Failed"))
                     playGame();
-                back.setClickable(false);
+                //back.setClickable(false);
                 rock.setClickable(false);
                 paper.setClickable(false);
                 scissors.setClickable(false);
@@ -117,7 +117,7 @@ public class GameWindow extends AppCompatActivity {
                 move = 3;
                 while(status.equals("Failed"))
                     playGame();
-                back.setClickable(false);
+                //back.setClickable(false);
                 rock.setClickable(false);
                 paper.setClickable(false);
                 scissors.setClickable(false);
@@ -130,6 +130,7 @@ public class GameWindow extends AppCompatActivity {
             if (mAuthTask != null) {
                 return;
             }
+            back.setClickable(true);
             mAuthTask = new GameTask(user1, user2, number, move);
             mAuthTask.execute((Void) null);
 
@@ -155,6 +156,8 @@ public class GameWindow extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
+
+                //System.out.println("clearing");
                 URL url = new URL(PATH + "clear.php");
                 HttpURLConnection connect = (HttpURLConnection) url
                         .openConnection();
@@ -165,7 +168,7 @@ public class GameWindow extends AppCompatActivity {
                 connect.setDoOutput(true);
 
                 OutputStream os = connect.getOutputStream();
-                String s = "user1=" + user1 + "&user2=" + user2;
+                String s = "username1=" + user1 + "&username2=" + user2;
                 os.write(s.getBytes());
                 os.close();
 
