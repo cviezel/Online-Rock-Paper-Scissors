@@ -45,14 +45,17 @@ public class GameWindow extends AppCompatActivity {
     public Button rock;
     public Button paper;
     public Button scissors;
-    public Button refresh;
+    public Button back;
     public TextView result;
     public String user1, user2;
     public int number;
     public int move = 0;
     public Boolean won = false;
 
+    public String status = "Failed";
+
     private GameTask mAuthTask = null;
+    private ClearTask mAuthTask1 = null;
     public final String PATH = "https://cs.binghamton.edu/~jsuhr2/";
 
     @Override
@@ -64,7 +67,7 @@ public class GameWindow extends AppCompatActivity {
         paper = findViewById(R.id.paper);
         scissors = findViewById(R.id.scissors);
         result = findViewById(R.id.result);
-        refresh = findViewById(R.id.refresh);
+        back = findViewById(R.id.back);
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -74,15 +77,25 @@ public class GameWindow extends AppCompatActivity {
             user2 = bundle.getString("User2");
             number = bundle.getInt("Number");
         }
-        refresh.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                playGame();
+        back.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                clearGame();
+                Intent intent = new Intent(GameWindow.this, MainActivity.class);
+                Bundle bundle = new Bundle();
+                if(number == 1)
+                    bundle.putString("User", user1);
+                else
+                    bundle.putString("User", user2);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
         rock.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 move = 1;
-                playGame();
+                while(status.equals("Failed"))
+                    playGame();
+                back.setClickable(false);
                 rock.setClickable(false);
                 paper.setClickable(false);
                 scissors.setClickable(false);
@@ -91,7 +104,9 @@ public class GameWindow extends AppCompatActivity {
         paper.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 move = 2;
-                playGame();
+                while(status.equals("Failed"))
+                    playGame();
+                back.setClickable(false);
                 rock.setClickable(false);
                 paper.setClickable(false);
                 scissors.setClickable(false);
@@ -100,7 +115,9 @@ public class GameWindow extends AppCompatActivity {
         scissors.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 move = 3;
-                playGame();
+                while(status.equals("Failed"))
+                    playGame();
+                back.setClickable(false);
                 rock.setClickable(false);
                 paper.setClickable(false);
                 scissors.setClickable(false);
@@ -109,13 +126,66 @@ public class GameWindow extends AppCompatActivity {
     }
 
     private void playGame() {
-        if (mAuthTask != null) {
+            System.out.println("Checking");
+            if (mAuthTask != null) {
+                return;
+            }
+            mAuthTask = new GameTask(user1, user2, number, move);
+            mAuthTask.execute((Void) null);
+
+    }
+    private void clearGame()
+    {
+        if (mAuthTask1 != null) {
             return;
         }
+        mAuthTask1 = new ClearTask(user1, user2);
+        mAuthTask1.execute((Void) null);
+    }
+    public class ClearTask extends AsyncTask<Void, Void, Boolean> {
 
-        mAuthTask = new GameTask(user1, user2, number, move);
-        mAuthTask.execute((Void) null);
+        private final String user1;
+        private final String user2;
 
+        ClearTask(String user1, String user2) {
+            this.user1 = user1;
+            this.user2 = user2;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                URL url = new URL(PATH + "clear.php");
+                HttpURLConnection connect = (HttpURLConnection) url
+                        .openConnection();
+                connect.setReadTimeout(15000);
+                connect.setConnectTimeout(15000);
+                connect.setRequestMethod("POST");
+                connect.setDoInput(true);
+                connect.setDoOutput(true);
+
+                OutputStream os = connect.getOutputStream();
+                String s = "user1=" + user1 + "&user2=" + user2;
+                os.write(s.getBytes());
+                os.close();
+
+                InputStream is = connect.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line = br.readLine();
+                System.out.println(line);
+
+                if (line.equals("Failed")) {
+                    mAuthTask1 = null;
+                    return false;
+                } else {
+                    return true;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
     }
     public class GameTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -156,6 +226,7 @@ public class GameWindow extends AppCompatActivity {
                 InputStream is = connect.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line = br.readLine();
+                status = line;
                 System.out.println(line);
 
                 //ex: 1 2
@@ -163,20 +234,15 @@ public class GameWindow extends AppCompatActivity {
                 //if either has a 0 in it, return false and check again in refresh function
 
                 if (line.equals("Failed")) {
+                    if(result.getText().equals(""))
+                        result.setText("Awaiting other move");
                     mAuthTask = null;
-                    result.setText("Awaiting other move");
                     return false;
                 } else {
                     //do logic for winner and update screen textbox
                     String[] splitted = line.split("\\s+");
                     int move1 = Integer.parseInt(splitted[0]);
                     int move2 = Integer.parseInt(splitted[1]);
-
-                    if(move1 == 0 || move2 == 0)
-                    {
-                        result.setText("Awaiting other move");
-                        return true;
-                    }
 
                     if (move1 == move2)
                     {

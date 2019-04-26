@@ -19,6 +19,7 @@
         android:text="Scissors"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/paper" />
 
@@ -35,6 +36,7 @@
         android:text="Paper"
         app:layout_constraintBottom_toTopOf="@+id/scissors"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rock" />
 
@@ -44,13 +46,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="162dp"
         android:layout_marginLeft="162dp"
-        android:layout_marginTop="461dp"
+        android:layout_marginTop="400dp"
         android:layout_marginEnd="161dp"
         android:layout_marginRight="161dp"
         android:layout_marginBottom="24dp"
         android:text="Rock"
         app:layout_constraintBottom_toTopOf="@+id/paper"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,7 +63,7 @@
         android:layout_height="123dp"
         android:layout_marginStart="107dp"
         android:layout_marginLeft="107dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="140dp"
         android:layout_marginEnd="107dp"
         android:layout_marginRight="107dp"
         android:layout_marginBottom="222dp"
@@ -68,22 +71,25 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/rock"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="72dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="54dp"
+        android:layout_marginLeft="54dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="285dp"
+        android:layout_marginRight="285dp"
+        android:layout_marginBottom="23dp"
+        android:text="Back"
+        app:layout_constraintBottom_toTopOf="@+id/result"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/refresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="161dp"
-        android:layout_marginLeft="161dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="162dp"
-        android:layout_marginRight="162dp"
-        android:layout_marginBottom="147dp"
-        android:text="Refresh"
-        app:layout_constraintBottom_toTopOf="@+id/rock"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/result" />
 </android.support.constraint.ConstraintLayout>
